@@ -8,8 +8,10 @@ import java.util.UUID;
 public class Anime {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    public UUID animeid;
-
-    public String title;
-    public String imageurl;
+    public UUID id;
+    public String name;
+    public String description;
+    public String type;
+    public int year_release;
+    public String image;
 }
