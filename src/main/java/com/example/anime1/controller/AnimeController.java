@@ -5,7 +5,6 @@ import com.example.anime1.domain.dto.ListResult;
 import com.example.anime1.domain.model.Anime;
 import com.example.anime1.repository.AnimeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,8 +20,7 @@ public class AnimeController {
 
     @GetMapping("/")
     public ResponseEntity<?> findAllAnime() {
-        List<Anime> animeList = animeRepository.findAll();
-        return ResponseEntity.ok().body(ListResult.list(animeList));
+        return ResponseEntity.ok().body(ListResult.list(animeRepository.findAll()));
     }
 
     @GetMapping("/{id}")
@@ -45,6 +43,15 @@ public class AnimeController {
         return ResponseEntity.ok().body(animeRepository.save(anime));
     }
 
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<?> deleteAnime()
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteAnime(@PathVariable UUID id) {
+        Anime anime = animeRepository.findById(id).orElse(null);
+        if (anime != null) {
+            animeRepository.deleteById(id);
+            return ResponseEntity.ok()
+                    .body(ErrorMessage.message(String.format("S'ha eliminat l'anime amd id '%s'", id)));
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(ErrorMessage.message(String.format("No s 'ha trobat l' anime amd id %s", id)));
+    }
 }
