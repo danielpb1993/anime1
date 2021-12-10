@@ -10,8 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -29,7 +27,7 @@ public class UserController {
     public ResponseEntity<?> getAllUser() {
         List<UserResult> userList = userRepository.findAll()
                 .stream()
-                .map(UserResult::user) // Same as (user -> UserResult.user(user))
+                .map(UserResult::user)
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok().body(ListResult.list(userList));
@@ -57,11 +55,11 @@ public class UserController {
         if (user != null) {
             userRepository.deleteById(id);
             return ResponseEntity.ok()
-                    .body(DisplayMessage.message( String.format("S'ha eliminat l'usuari amd id '%s'", id)));
+                    .body(ErrorMessage.message( String.format("S'ha eliminat l'usuari amd id '%s'", id)));
         }
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(DisplayMessage.message(String.format("No s'ha trobat l'usuari amd id %s", id)));
+                .body(ErrorMessage.message(String.format("No s'ha trobat l'usuari amd id %s", id)));
     }
 
     @DeleteMapping("/")
