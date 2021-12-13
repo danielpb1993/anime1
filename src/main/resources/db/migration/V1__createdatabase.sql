@@ -12,3 +12,8 @@ username varchar(24) NOT NULL UNIQUE,
 password varchar(255) NOT NULL,
 role varchar(10),
 enabled boolean DEFAULT true);
+
+CREATE TABLE favorite (
+userid uuid REFERENCES usser(userid) ON DELETE CASCADE,
+id uuid REFERENCES anime(id) ON DELETE CASCADE,
+PRIMARY KEY(userid, id));

@@ -1,13 +1,16 @@
 package com.example.anime1.controller;
 
 import com.example.anime1.domain.dto.ErrorMessage;
+import com.example.anime1.domain.model.Favorite;
 import com.example.anime1.domain.dto.ListResult;
 import com.example.anime1.domain.dto.UserResult;
 import com.example.anime1.domain.model.User;
+import com.example.anime1.repository.FavoriteRepository;
 import com.example.anime1.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -20,6 +23,8 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    FavoriteRepository favoriteRepository;
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
@@ -66,5 +71,16 @@ public class UserController {
     public ResponseEntity<?> deleteAllUser() {
         userRepository.deleteAll();
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{id}/favorites")
+    public ResponseEntity<?> addFavorite(@RequestBody Favorite favorite, Authentication authentication) {
+        if (userRepository.findByUsername(authentication.getName()).userid == favorite.userid) {
+            favoriteRepository.save(favorite);
+            return ResponseEntity.ok().build();
+        }
+
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorMessage.message("Not authorized"));
     }
 }

@@ -1,0 +1,2 @@
+--INSERT INTO favorite values
+--    ((SELECT userid FROM usser WHERE username = ''))
